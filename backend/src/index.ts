@@ -43,7 +43,10 @@ app.get('/health', (req: Request, res: Response) => {
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error('Global Error Handler:', err); // Log full object
   console.error('Stack:', err.stack);
-  res.status(500).json({ message: 'Internal Server Error', error: err.message }); // Send message back for now to help debug
+  res.status(500).json({ 
+    message: 'Error Interno del Servidor', 
+    error: process.env.NODE_ENV === 'development' ? err.message : undefined 
+  });
 });
 
 app.listen(PORT, () => {

@@ -20,8 +20,8 @@ import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 
 const loginSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  email: z.string().email("Email inválido"),
+  password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
 });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
@@ -40,10 +40,10 @@ export function LoginForm() {
     try {
       const { data: responseData } = await api.post("/auth/login", data);
       localStorage.setItem("accessToken", responseData.accessToken);
-      toast.success("Logged in successfully!");
+      toast.success("¡Inicio de sesión exitoso!");
       router.push("/dashboard");
     } catch (error: any) {
-      const message = error.response?.data?.message || "Something went wrong";
+      const message = error.response?.data?.message || "Algo salió mal";
       toast.error(message);
     }
   }
@@ -56,8 +56,8 @@ export function LoginForm() {
   return (
     <Card className="w-[350px]">
       <CardHeader>
-        <CardTitle>Login</CardTitle>
-        <CardDescription>Enter your email below to login.</CardDescription>
+        <CardTitle>Iniciar Sesión</CardTitle>
+        <CardDescription>Ingresa tu email para acceder a tu cuenta.</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -69,7 +69,7 @@ export function LoginForm() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="m@example.com" {...field} />
+                    <Input placeholder="tucorreo@ejemplo.com" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -81,12 +81,12 @@ export function LoginForm() {
               render={({ field }) => (
                 <FormItem>
                   <div className="flex items-center justify-between">
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>Contraseña</FormLabel>
                     <a 
                       href="/auth/forgot-password" 
                       className="text-xs text-muted-foreground hover:underline"
                     >
-                      Forgot password?
+                      ¿Olvidaste tu contraseña?
                     </a>
                   </div>
                   <FormControl>
@@ -97,7 +97,7 @@ export function LoginForm() {
               )}
             />
             <Button type="submit" className="w-full">
-              Sign In
+              Ingresar
             </Button>
           </form>
         </Form>
@@ -108,14 +108,13 @@ export function LoginForm() {
           </div>
           <div className="relative flex justify-center text-xs uppercase">
             <span className="bg-background px-2 text-muted-foreground">
-              Or continue with
+              O continuar con
             </span>
           </div>
         </div>
 
         <div className="flex flex-col gap-2">
           <Button variant="outline" type="button" onClick={() => handleOAuthLogin("google")}>
-            {/* Simple Google G Icon */}
             <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
               <path
                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -146,7 +145,7 @@ export function LoginForm() {
       </CardContent>
       <CardFooter className="flex justify-center">
         <a href="/auth/register" className="text-sm text-muted-foreground hover:underline">
-          Don't have an account? Sign up
+          ¿No tienes cuenta? Regístrate
         </a>
       </CardFooter>
     </Card>

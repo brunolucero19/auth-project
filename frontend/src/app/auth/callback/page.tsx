@@ -14,10 +14,10 @@ function AuthCallbackContent() {
 
     if (accessToken) {
       localStorage.setItem("accessToken", accessToken);
-      toast.success("Successfully logged in with OAuth!");
+      toast.success("¡Inicio de sesión con OAuth exitoso!");
       router.push("/dashboard");
     } else if (error) {
-      toast.error("Login failed. Please try again.");
+      toast.error("Error al iniciar sesión. Por favor intenta de nuevo.");
       router.push("/auth/login");
     } else {
         // Fallback
@@ -28,8 +28,8 @@ function AuthCallbackContent() {
   return (
     <div className="flex h-screen w-full items-center justify-center">
       <div className="flex flex-col items-center gap-2">
-        <h2 className="text-xl font-semibold">Authenticating...</h2>
-        <p className="text-muted-foreground">Please wait while we log you in.</p>
+        <h2 className="text-xl font-semibold">Autenticando...</h2>
+        <p className="text-muted-foreground">Por favor espera mientras iniciamos tu sesión.</p>
       </div>
     </div>
   );

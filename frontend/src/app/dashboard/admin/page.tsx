@@ -32,21 +32,21 @@ export default function AdminPage() {
     fetchUsers();
   }, []);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div>Cargando...</div>;
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>User Management</CardTitle>
+        <CardTitle>Gestión de Usuarios</CardTitle>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>Email</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Role</TableHead>
-              <TableHead>Joined</TableHead>
+              <TableHead>Nombre</TableHead>
+              <TableHead>Rol</TableHead>
+              <TableHead>Fecha de Registro</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

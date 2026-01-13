@@ -3,6 +3,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import api from "@/lib/axios";
 import { useEffect } from "react";
@@ -20,43 +21,37 @@ import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 
 const profileSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters").optional(),
-  email: z.string().email("Invalid email address").optional(), // Read-only typically, but included for display
-  password: z.string().min(6, "Password must be at least 6 characters").optional().or(z.literal("")),
+  name: z.string().min(2, "El nombre debe tener al menos 2 caracteres").optional(),
+  email: z.string().email("Email inválido").optional(),
+  password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres").optional().or(z.literal('')),
+  image: z.string().url("URL de imagen inválida").optional().or(z.literal('')),
 });
 
 type ProfileFormValues = z.infer<typeof profileSchema>;
 
 export function ProfileForm({ user }: { user: any }) {
+  const router = useRouter();
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      name: "",
-      email: "",
+      name: user?.name || "",
+      email: user?.email || "",
+      image: user?.image || "",
       password: "",
     },
   });
 
-  useEffect(() => {
-    if (user) {
-      form.reset({
-        name: user.name || "",
-        email: user.email || "",
-      });
-    }
-  }, [user, form]);
-
   async function onSubmit(data: ProfileFormValues) {
     try {
-      const payload: any = { name: data.name };
-      if (data.password) {
-        payload.password = data.password;
-      }
+      // Filter out empty password if not provided
+      const payload: any = { ...data };
+      if (!payload.password) delete payload.password;
       
-      await api.put("/users/profile", payload);
-      toast.success("Profile updated successfully!");
+      await api.patch("/users/profile", payload);
+      toast.success("¡Perfil actualizado exitosamente!");
+      router.refresh();
     } catch (error: any) {
-      const message = error.response?.data?.message || "Something went wrong";
+      const message = error.response?.data?.message || "Error al actualizar perfil";
       toast.error(message);
     }
   }
@@ -64,8 +59,8 @@ export function ProfileForm({ user }: { user: any }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Profile Settings</CardTitle>
-        <CardDescription>Update your personal information.</CardDescription>
+        <CardTitle>Tu Perfil</CardTitle>
+        <CardDescription>Actualiza tu información personal.</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -77,7 +72,7 @@ export function ProfileForm({ user }: { user: any }) {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input {...field} disabled />
+                    <Input placeholder="tucorreo@ejemplo.com" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -88,9 +83,9 @@ export function ProfileForm({ user }: { user: any }) {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>Nombre</FormLabel>
                   <FormControl>
-                    <Input placeholder="Your Name" {...field} />
+                    <Input placeholder="Tu Nombre" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -101,16 +96,29 @@ export function ProfileForm({ user }: { user: any }) {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>New Password (Optional)</FormLabel>
+                  <FormLabel>Nueva Contraseña (Opcional)</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="••••••" {...field} />
+                    <Input type="password" placeholder="Dejar en blanco para mantener la actual" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="image"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>URL de Avatar</FormLabel>
+                  <FormControl>
+                    <Input placeholder="https://ejemplo.com/foto.jpg" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <Button type="submit">
-              Save Changes
+              Guardar Cambios
             </Button>
           </form>
         </Form>

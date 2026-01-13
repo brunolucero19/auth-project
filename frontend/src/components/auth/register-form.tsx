@@ -20,9 +20,9 @@ import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 
 const registerSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  name: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
+  email: z.string().email("Email inválido"),
+  password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
 });
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
@@ -41,10 +41,10 @@ export function RegisterForm() {
   async function onSubmit(data: RegisterFormValues) {
     try {
       await api.post("/auth/register", data);
-      toast.success("Account created! Please check your email to verify.");
+      toast.success("¡Registro exitoso! Por favor inicia sesión.");
       router.push("/auth/login");
     } catch (error: any) {
-      const message = error.response?.data?.message || "Something went wrong";
+      const message = error.response?.data?.message || "Algo salió mal";
       toast.error(message);
     }
   }
@@ -52,8 +52,8 @@ export function RegisterForm() {
   return (
     <Card className="w-[350px]">
       <CardHeader>
-        <CardTitle>Register</CardTitle>
-        <CardDescription>Create a new account.</CardDescription>
+        <CardTitle>Crear Cuenta</CardTitle>
+        <CardDescription>Ingresa tus datos para registrarte.</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -63,9 +63,9 @@ export function RegisterForm() {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>Nombre</FormLabel>
                   <FormControl>
-                    <Input placeholder="John Doe" {...field} />
+                    <Input placeholder="Tu Nombre" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -78,7 +78,7 @@ export function RegisterForm() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="m@example.com" {...field} />
+                    <Input placeholder="tucorreo@ejemplo.com" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -89,7 +89,7 @@ export function RegisterForm() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>Contraseña</FormLabel>
                   <FormControl>
                     <Input type="password" {...field} />
                   </FormControl>
@@ -98,14 +98,14 @@ export function RegisterForm() {
               )}
             />
             <Button type="submit" className="w-full">
-              Sign Up
+              Registrarse
             </Button>
           </form>
         </Form>
       </CardContent>
       <CardFooter className="flex justify-center">
         <a href="/auth/login" className="text-sm text-muted-foreground hover:underline">
-          Already have an account? Login
+          ¿Ya tienes cuenta? Inicia sesión
         </a>
       </CardFooter>
     </Card>

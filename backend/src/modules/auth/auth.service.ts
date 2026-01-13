@@ -79,15 +79,11 @@ const createSession = async (userId: string, userAgent: string | undefined, ipAd
   });
 };
 
-export const findOrCreateUserFromOAuth = async (email: string, name: string, provider: string, providerId: string) => {
+export const findOrCreateUserFromOAuth = async (email: string, name: string, provider: string, providerId: string, image?: string) => {
   let user = await prisma.user.findUnique({ where: { email } });
 
   if (!user) {
     // Create new user
-    // Note: Password is required by schema? We should check logic.
-    // If password is required, we generate a random one or make it optional in schema.
-    // Assuming schema allows null password or we generate a dummy one.
-    // Let's generate a random secure-ish password since user won't use it.
     const dummyPassword = await bcrypt.hash(Math.random().toString(36), 10);
     
     user = await prisma.user.create({
@@ -96,9 +92,15 @@ export const findOrCreateUserFromOAuth = async (email: string, name: string, pro
         name,
         password: dummyPassword,
         role: Role.USER,
-        // We might want to store provider info in Account table if we were being strict
+        image,
       },
     });
+  } else if (image && !user.image) {
+      // Optional: Update image if missing
+      user = await prisma.user.update({
+          where: { id: user.id },
+          data: { image }
+      });
   }
   
   return user;

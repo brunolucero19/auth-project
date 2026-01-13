@@ -17,9 +17,9 @@ model User {
   email         String    @unique
   password      String?   // Optional because of OAuth
   name          String?
-  avatar        String?
   role          Role      @default(USER)
   emailVerified DateTime? // Changed from Boolean to DateTime for flexibility
+  image         String?
   
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt

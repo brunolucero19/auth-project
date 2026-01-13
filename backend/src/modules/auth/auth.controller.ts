@@ -60,6 +60,7 @@ export const handleOAuthCallback = async (req: Request, res: Response) => {
 
     let email = profile.emails?.[0]?.value;
     const name = profile.displayName || profile.username;
+    const image = profile.photos?.[0]?.value;
     
     if (!email) {
       if (profile.provider === 'github' && profile.id) {
@@ -71,7 +72,7 @@ export const handleOAuthCallback = async (req: Request, res: Response) => {
     }
 
     // Find or create user
-    const user = await AuthService.findOrCreateUserFromOAuth(email, name, profile.provider, profile.id);
+    const user = await AuthService.findOrCreateUserFromOAuth(email, name, profile.provider, profile.id, image);
 
     // Generate tokens
     const { accessToken, refreshToken } = AuthService.generateTokens(user);

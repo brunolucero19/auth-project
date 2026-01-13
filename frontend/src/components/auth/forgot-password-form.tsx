@@ -19,7 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 
 const forgotPasswordSchema = z.object({
-  email: z.string().email("Invalid email address"),
+  email: z.string().email("Email inválido"),
 });
 
 type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
@@ -35,9 +35,9 @@ export function ForgotPasswordForm() {
   async function onSubmit(data: ForgotPasswordFormValues) {
     try {
       await api.post("/auth/forgot-password", data); // Ensure this endpoint exists in backend
-      toast.success("Password reset email sent (check console/ethereal)!");
+      toast.success("Si el email existe, recibirás instrucciones para restablecer tu contraseña.");
     } catch (error: any) {
-      const message = error.response?.data?.message || "Something went wrong";
+      const message = error.response?.data?.message || "Algo salió mal";
       toast.error(message);
     }
   }
@@ -45,8 +45,10 @@ export function ForgotPasswordForm() {
   return (
     <Card className="w-[350px]">
       <CardHeader>
-        <CardTitle>Forgot Password</CardTitle>
-        <CardDescription>Enter your email to receive a reset link.</CardDescription>
+        <CardTitle>Recuperar Contraseña</CardTitle>
+        <CardDescription>
+          Ingresa tu email para recibir un enlace de recuperación.
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -58,21 +60,21 @@ export function ForgotPasswordForm() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="m@example.com" {...field} />
+                    <Input placeholder="tucorreo@ejemplo.com" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <Button type="submit" className="w-full">
-              Send Reset Link
+              Enviar enlace
             </Button>
           </form>
         </Form>
       </CardContent>
       <CardFooter className="flex justify-center">
         <a href="/auth/login" className="text-sm text-muted-foreground hover:underline">
-          Back to Login
+          Volver al inicio de sesión
         </a>
       </CardFooter>
     </Card>

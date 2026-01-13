@@ -27,14 +27,9 @@ export default function ProfilePage() {
   if (!user) return <div>Access Denied</div>;
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h3 className="text-lg font-medium">Profile</h3>
-        <p className="text-sm text-muted-foreground">
-          Manage your account settings and preferences.
-        </p>
-      </div>
-      <ProfileForm user={user} />
+    <div className="max-w-2xl mx-auto">
+        <h1 className="text-2xl font-bold mb-6">Configuración del Perfil</h1>
+        <ProfileForm user={user} />
     </div>
   );
 }

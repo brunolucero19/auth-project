@@ -5,10 +5,6 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-console.log('Google Client ID present:', !!process.env.GOOGLE_CLIENT_ID);
-console.log('GitHub Client ID present:', !!process.env.GITHUB_CLIENT_ID);
-console.log('GitHub Client ID Value:', process.env.GITHUB_CLIENT_ID); // Temporary partial log for debug
-
 // Google Strategy
 passport.use(
   new GoogleStrategy(

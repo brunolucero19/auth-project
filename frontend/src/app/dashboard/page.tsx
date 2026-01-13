@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import api from "@/lib/axios";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 
 export default function DashboardPage() {
   const [user, setUser] = useState<any>(null);
@@ -32,25 +32,26 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
-        <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                    User Info
-                </CardTitle>
-            </CardHeader>
-            <CardContent>
-                <div className="text-2xl font-bold">{user.name || "No Name"}</div>
-                <p className="text-xs text-muted-foreground">
-                    {user.email}
-                </p>
-                <div className="mt-4">
-                    <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
-                        {user.role}
-                    </span>
+    <div className="flex flex-col gap-4">
+      <h1 className="text-2xl font-bold">¡Bienvenido al Panel de Control!</h1>
+      <Card>
+        <CardHeader>
+            <CardTitle>Información del Usuario</CardTitle>
+            <CardDescription>Estos son los detalles de tu cuenta.</CardDescription>
+        </CardHeader>
+        <CardContent>
+            {user ? (
+                <div className="grid gap-2">
+                    <p><strong>ID:</strong> {user.id}</p>
+                    <p><strong>Email:</strong> {user.email}</p>
+                    <p><strong>Nombre:</strong> {user.name || "No definido"}</p>
+                    <p><strong>Rol:</strong> {user.role}</p>
                 </div>
-            </CardContent>
-        </Card>
+            ) : (
+                <p>Cargando información del usuario...</p>
+            )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

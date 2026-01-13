@@ -5,7 +5,7 @@ import prisma from '../../config/prisma';
 export const getUserById = async (id: string) => {
   return prisma.user.findUnique({
     where: { id },
-    select: { id: true, email: true, name: true, role: true, avatar: true, emailVerified: true, createdAt: true },
+    select: { id: true, email: true, name: true, role: true, image: true, emailVerified: true, createdAt: true },
   });
 };
 
@@ -17,7 +17,7 @@ export const updateUser = async (id: string, data: Partial<User>) => {
   return prisma.user.update({
     where: { id },
     data,
-    select: { id: true, email: true, name: true, role: true, avatar: true },
+    select: { id: true, email: true, name: true, role: true, image: true },
   });
 };
 
