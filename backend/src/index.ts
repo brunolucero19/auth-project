@@ -1,4 +1,5 @@
 import './config/env';
+import './config/passport';
 import express, { Express, Request, Response, NextFunction } from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
@@ -40,8 +41,9 @@ app.get('/health', (req: Request, res: Response) => {
 
 // Global Error Handler
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Internal Server Error' });
+  console.error('Global Error Handler:', err); // Log full object
+  console.error('Stack:', err.stack);
+  res.status(500).json({ message: 'Internal Server Error', error: err.message }); // Send message back for now to help debug
 });
 
 app.listen(PORT, () => {

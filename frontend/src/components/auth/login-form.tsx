@@ -49,7 +49,8 @@ export function LoginForm() {
   }
 
   const handleOAuthLogin = (provider: "google" | "github") => {
-    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/${provider}`;
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
+    window.location.href = `${apiUrl}/auth/${provider}`;
   };
 
   return (

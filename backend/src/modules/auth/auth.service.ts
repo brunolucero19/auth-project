@@ -6,7 +6,7 @@ import prisma from '../../config/prisma';
 export const registerUser = async (email: string, password: string, name?: string) => {
   const existingUser = await prisma.user.findUnique({ where: { email } });
   if (existingUser) {
-    throw new Error('User already exists');
+    throw new Error('El usuario ya existe');
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -26,12 +26,12 @@ export const registerUser = async (email: string, password: string, name?: strin
 export const loginUser = async (email: string, password: string, userAgent?: string, ipAddress?: string) => {
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user || !user.password) {
-    throw new Error('Invalid credentials');
+    throw new Error('Credenciales inválidas');
   }
 
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
-    throw new Error('Invalid credentials');
+    throw new Error('Credenciales inválidas');
   }
 
   const { accessToken, refreshToken } = generateTokens(user);
@@ -77,4 +77,29 @@ const createSession = async (userId: string, userAgent: string | undefined, ipAd
       expiresAt,
     },
   });
+};
+
+export const findOrCreateUserFromOAuth = async (email: string, name: string, provider: string, providerId: string) => {
+  let user = await prisma.user.findUnique({ where: { email } });
+
+  if (!user) {
+    // Create new user
+    // Note: Password is required by schema? We should check logic.
+    // If password is required, we generate a random one or make it optional in schema.
+    // Assuming schema allows null password or we generate a dummy one.
+    // Let's generate a random secure-ish password since user won't use it.
+    const dummyPassword = await bcrypt.hash(Math.random().toString(36), 10);
+    
+    user = await prisma.user.create({
+      data: {
+        email,
+        name,
+        password: dummyPassword,
+        role: Role.USER,
+        // We might want to store provider info in Account table if we were being strict
+      },
+    });
+  }
+  
+  return user;
 };

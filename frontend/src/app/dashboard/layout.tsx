@@ -64,6 +64,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           >
             Profile
           </Link>
+          {user?.role === 'ADMIN' && (
+            <Link
+              href="/dashboard/admin"
+              className="text-muted-foreground transition-colors hover:text-foreground"
+            >
+              Admin
+            </Link>
+          )}
         </nav>
         <Sheet>
           <SheetTrigger asChild>
@@ -94,6 +102,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               >
                 Profile
               </Link>
+              {user?.role === 'ADMIN' && (
+                <Link
+                  href="/dashboard/admin"
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  Admin
+                </Link>
+              )}
             </nav>
           </SheetContent>
         </Sheet>

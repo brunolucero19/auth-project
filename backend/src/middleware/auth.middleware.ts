@@ -12,7 +12,7 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
   const authHeader = req.headers.authorization;
   
   if (!authHeader?.startsWith('Bearer ')) {
-    return res.status(401).json({ message: 'Unauthorized' });
+    return res.status(401).json({ message: 'No autorizado' });
   }
 
   const token = authHeader.split(' ')[1];
@@ -23,7 +23,7 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
     (req as AuthenticatedRequest).user = decoded;
     next();
   } catch (error) {
-    return res.status(403).json({ message: 'Invalid or expired token' });
+    return res.status(403).json({ message: 'Token inválido o expirado' });
   }
 };
 
@@ -32,7 +32,7 @@ export const authorize = (roles: Role[]) => {
     const userRole = (req as AuthenticatedRequest).user?.role;
     
     if (!userRole || !roles.includes(userRole)) {
-      return res.status(403).json({ message: 'Forbidden: Insufficient permissions' });
+      return res.status(403).json({ message: 'Prohibido: Permisos insuficientes' });
     }
     next();
   };

@@ -5,37 +5,46 @@ import { AuthenticatedRequest } from '../../types/auth';
 export const getProfile = async (req: Request, res: Response) => {
   try {
     const userId = (req as AuthenticatedRequest).user?.userId;
-    if (!userId) return res.status(401).json({ message: 'Unauthorized' });
+    if (!userId) {
+      return res.status(401).json({ message: 'No autorizado' });
+    }
     
     const user = await UserService.getUserById(userId);
-    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (!user) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
     res.json(user);
-  } catch (error) {
-    res.status(500).json({ message: (error as Error).message });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
   }
 };
 
 export const updateProfile = async (req: Request, res: Response) => {
   try {
     const userId = (req as AuthenticatedRequest).user?.userId;
-    if (!userId) return res.status(401).json({ message: 'Unauthorized' });
+    if (!userId) {
+      return res.status(401).json({ message: 'No autorizado' });
+    }
 
+    // Basic validation logic here or use Zod
     const updatedUser = await UserService.updateUser(userId, req.body);
-    res.json(updatedUser);
-  } catch (error) {
-    res.status(400).json({ message: (error as Error).message });
+    res.json({ message: 'Perfil actualizado', user: updatedUser });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
   }
 };
 
 export const deleteAccount = async (req: Request, res: Response) => {
   try {
     const userId = (req as AuthenticatedRequest).user?.userId;
-    if (!userId) return res.status(401).json({ message: 'Unauthorized' });
+    if (!userId) {
+      return res.status(401).json({ message: 'No autorizado' });
+    }
 
     await UserService.deleteUser(userId);
-    res.json({ message: 'Account deleted successfully' });
-  } catch (error) {
-    res.status(500).json({ message: (error as Error).message });
+    res.json({ message: 'Cuenta eliminada exitosamente' });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
   }
 };
 
