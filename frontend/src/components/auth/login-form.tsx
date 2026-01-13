@@ -38,7 +38,8 @@ export function LoginForm() {
 
   async function onSubmit(data: LoginFormValues) {
     try {
-      await api.post("/auth/login", data);
+      const { data: responseData } = await api.post("/auth/login", data);
+      localStorage.setItem("accessToken", responseData.accessToken);
       toast.success("Logged in successfully!");
       router.push("/dashboard");
     } catch (error: any) {

@@ -1,11 +1,9 @@
+import './config/env';
 import express, { Express, Request, Response, NextFunction } from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import cookieParser from 'cookie-parser';
-import dotenv from 'dotenv';
-
-dotenv.config();
 
 const app: Express = express();
 const PORT = process.env.PORT || 4000;
