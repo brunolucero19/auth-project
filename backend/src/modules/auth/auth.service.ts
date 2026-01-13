@@ -105,3 +105,66 @@ export const findOrCreateUserFromOAuth = async (email: string, name: string, pro
   
   return user;
 };
+
+import { sendEmail } from '../../services/email.service';
+import crypto from 'crypto';
+
+export const requestPasswordReset = async (email: string) => {
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user) {
+    // Security: Don't reveal if user exists. Return true effectively.
+    return; 
+  }
+
+  const token = crypto.randomBytes(32).toString('hex');
+  const expiresAt = new Date(Date.now() + 3600000); // 1 hour
+
+  await prisma.passwordResetToken.create({
+    data: {
+      token,
+      identifier: user.email,
+      expires: expiresAt,
+    },
+  });
+
+  const resetLink = `${process.env.FRONTEND_URL}/auth/reset-password?token=${token}`;
+  
+  // LOG FOR DEVELOPMENT: Allow testing without valid email setup
+  console.log('================================================');
+  console.log('LINK DE RECUPERACIÓN (Copia y pega en navegador):');
+  console.log(resetLink);
+  console.log('================================================');
+
+  await sendEmail(
+    email,
+    'Restablecer Contraseña',
+    `<p>Hola ${user.name || 'Usuario'},</p>
+     <p>Has solicitado restablecer tu contraseña. Haz clic en el siguiente enlace:</p>
+     <a href="${resetLink}">Restablecer Contraseña</a>
+     <p>Este enlace expira en 1 hora.</p>`
+  );
+};
+
+export const resetPassword = async (token: string, newPassword: string) => {
+  const resetToken = await prisma.passwordResetToken.findUnique({ where: { token } });
+  
+  if (!resetToken || resetToken.expires < new Date()) {
+    throw new Error('Token inválido o expirado');
+  }
+
+  const user = await prisma.user.findUnique({ where: { email: resetToken.identifier } });
+  if (!user) {
+      throw new Error('Usuario no asociado al token');
+  }
+
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { password: hashedPassword },
+  });
+
+  await prisma.passwordResetToken.delete({ where: { token } });
+  
+  return true;
+};

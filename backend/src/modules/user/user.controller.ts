@@ -14,8 +14,8 @@ export const getProfile = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }
     res.json(user);
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
+  } catch (error) {
+    res.status(500).json({ message: (error as Error).message });
   }
 };
 
@@ -29,8 +29,8 @@ export const updateProfile = async (req: Request, res: Response) => {
     // Basic validation logic here or use Zod
     const updatedUser = await UserService.updateUser(userId, req.body);
     res.json({ message: 'Perfil actualizado', user: updatedUser });
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
+  } catch (error) {
+    res.status(500).json({ message: (error as Error).message });
   }
 };
 
@@ -43,8 +43,8 @@ export const deleteAccount = async (req: Request, res: Response) => {
 
     await UserService.deleteUser(userId);
     res.json({ message: 'Cuenta eliminada exitosamente' });
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
+  } catch (error) {
+    res.status(500).json({ message: (error as Error).message });
   }
 };
 

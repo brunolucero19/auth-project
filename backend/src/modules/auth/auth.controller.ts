@@ -13,11 +13,11 @@ export const register = async (req: Request, res: Response) => {
     const { email, password, name } = registerSchema.parse(req.body);
     const user = await AuthService.registerUser(email, password, name);
     res.status(201).json({ message: 'Usuario creado exitosamente', user: { id: user.id, email: user.email } });
-  } catch (error: any) {
+  } catch (error) {
     if (error instanceof z.ZodError) {
       res.status(400).json({ errors: error.errors });
     } else {
-      res.status(400).json({ message: error.message });
+      res.status(400).json({ message: (error as Error).message });
     }
   }
 };
@@ -39,8 +39,8 @@ export const login = async (req: Request, res: Response) => {
     });
 
     res.json({ accessToken, user: { id: user.id, name: user.name, email: user.email, role: user.role } });
-  } catch (error: any) {
-    res.status(401).json({ message: error.message });
+  } catch (error) {
+    res.status(401).json({ message: (error as Error).message });
   }
 };
 
@@ -92,4 +92,28 @@ export const handleOAuthCallback = async (req: Request, res: Response) => {
     console.error('OAuth Error:', error);
     res.redirect(`${process.env.FRONTEND_URL}/auth/login?error=oauth_failed`);
   }
+};
+
+export const forgotPassword = async (req: Request, res: Response) => {
+    try {
+        const { email } = req.body;
+        if (!email) return res.status(400).json({ message: 'Email es requerido' });
+        
+        await AuthService.requestPasswordReset(email);
+        res.json({ message: 'Si el correo existe, se han enviado instrucciones para restablecer la contraseña.' });
+    } catch (error) {
+        res.status(500).json({ message: (error as Error).message });
+    }
+};
+
+export const resetPassword = async (req: Request, res: Response) => {
+    try {
+        const { token, password } = req.body;
+        if (!token || !password) return res.status(400).json({ message: 'Token y contraseña son requeridos' });
+
+        await AuthService.resetPassword(token, password);
+        res.json({ message: 'Contraseña restablecida exitosamente' });
+    } catch (error) {
+        res.status(400).json({ message: (error as Error).message });
+    }
 };

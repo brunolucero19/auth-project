@@ -6,7 +6,7 @@ import { Role } from '@prisma/client';
 const router = Router();
 
 router.get('/profile', authenticate, UserController.getProfile);
-router.put('/profile', authenticate, UserController.updateProfile);
+router.patch('/profile', authenticate, UserController.updateProfile);
 router.delete('/profile', authenticate, UserController.deleteAccount);
 
 // Admin Routes

@@ -22,7 +22,7 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
     // Attach user to request object using type assertion or extending type definition
     (req as AuthenticatedRequest).user = decoded;
     next();
-  } catch (error) {
+  } catch {
     return res.status(403).json({ message: 'Token inválido o expirado' });
   }
 };
