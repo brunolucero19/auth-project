@@ -1,0 +1,50 @@
+import { Request, Response } from 'express';
+import * as AuthService from './auth.service';
+import { z } from 'zod';
+
+const registerSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6),
+  name: z.string().optional(),
+});
+
+export const register = async (req: Request, res: Response) => {
+  try {
+    const { email, password, name } = registerSchema.parse(req.body);
+    const user = await AuthService.registerUser(email, password, name);
+    res.status(201).json({ message: 'User created successfully', user: { id: user.id, email: user.email } });
+  } catch (error: any) {
+    if (error instanceof z.ZodError) {
+      res.status(400).json({ errors: error.errors });
+    } else {
+      res.status(400).json({ message: error.message });
+    }
+  }
+};
+
+export const login = async (req: Request, res: Response) => {
+  try {
+    const { email, password } = req.body;
+    const userAgent = req.headers['user-agent'];
+    const ipAddress = req.ip || req.connection.remoteAddress;
+
+    const { user, accessToken, refreshToken } = await AuthService.loginUser(email, password, userAgent, ipAddress as string);
+
+    // Secure cookie for refresh token
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+    res.json({ accessToken, user: { id: user.id, name: user.name, email: user.email, role: user.role } });
+  } catch (error: any) {
+    res.status(401).json({ message: error.message });
+  }
+};
+
+export const logout = (req: Request, res: Response) => {
+    res.clearCookie('refreshToken');
+    res.json({ message: 'Logged out successfully' });
+};
