@@ -9,19 +9,14 @@ function AuthCallbackContent() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    const accessToken = searchParams.get("accessToken");
+    // Backend sets cookies and redirects to dashboard directly usually.
+    // If we land here, just redirect to dashboard.
     const error = searchParams.get("error");
-
-    if (accessToken) {
-      localStorage.setItem("accessToken", accessToken);
-      toast.success("¡Inicio de sesión con OAuth exitoso!");
-      router.push("/dashboard");
-    } else if (error) {
-      toast.error("Error al iniciar sesión. Por favor intenta de nuevo.");
-      router.push("/auth/login");
+    if (error) {
+       toast.error("Error al iniciar sesión.");
+       router.push("/auth/login");
     } else {
-        // Fallback
-        router.push("/auth/login");
+       router.push("/dashboard");
     }
   }, [router, searchParams]);
 

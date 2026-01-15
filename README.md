@@ -62,7 +62,17 @@ GITHUB_CLIENT_SECRET=...
 NEXT_PUBLIC_API_URL="http://localhost:4000/api"
 ```
 
-### 3. Instalación y Ejecución
+### 3. Base de Datos (Docker)
+Si tienes Docker instalado, asegúrate de que **Docker Desktop esté ejecutándose**. Luego, levanta la base de datos:
+
+```bash
+docker-compose up -d
+```
+Esto iniciará un contenedor de PostgreSQL mapeado en el puerto **5433** (para no chocar con instalaciones locales).
+
+> **Nota**: Si usas este método, asegúrate de actualizar tu `DATABASE_URL` en el `.env` para usar el puerto `5433` en lugar de `5432`.
+
+### 4. Instalación y Ejecución
 
 **Backend:**
 ```bash

@@ -4,8 +4,6 @@ import path from 'path';
 // Calculate path to .env file (backend root)
 const envPath = path.resolve(__dirname, '../../.env');
 
-console.log(`[Config] Attempting to load .env from: ${envPath}`);
-
 let result = dotenv.config({ path: envPath });
 
 if (result.error) {
@@ -15,8 +13,6 @@ if (result.error) {
 
 if (result.error) {
   console.error('[Config] Error loading .env:', result.error);
-} else {
-  console.log('[Config] .env loaded successfully');
 }
 
 export const config = {

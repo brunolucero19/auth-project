@@ -8,16 +8,11 @@ const api = axios.create({
   },
 });
 
-api.interceptors.request.use(
-  (config) => {
-    if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('accessToken');
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-    }
-    return config;
-  },
+// No request interceptor needed for cookies
+// api.interceptors.request.use(...) removed as HttpOnly cookies are handled automatically by browser
+
+api.interceptors.response.use(
+  (response) => response,
   (error) => {
     return Promise.reject(error);
   }

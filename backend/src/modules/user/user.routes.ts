@@ -7,7 +7,7 @@ const router = Router();
 
 router.get('/profile', authenticate, UserController.getProfile);
 router.patch('/profile', authenticate, UserController.updateProfile);
-router.delete('/profile', authenticate, UserController.deleteAccount);
+
 
 // Admin Routes
 router.get('/', authenticate, authorize([Role.ADMIN]), UserController.listUsers);

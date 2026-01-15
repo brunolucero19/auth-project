@@ -34,19 +34,7 @@ export const updateProfile = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteAccount = async (req: Request, res: Response) => {
-  try {
-    const userId = (req as AuthenticatedRequest).user?.userId;
-    if (!userId) {
-      return res.status(401).json({ message: 'No autorizado' });
-    }
 
-    await UserService.deleteUser(userId);
-    res.json({ message: 'Cuenta eliminada exitosamente' });
-  } catch (error) {
-    res.status(500).json({ message: (error as Error).message });
-  }
-};
 
 export const listUsers = async (req: Request, res: Response) => {
   try {

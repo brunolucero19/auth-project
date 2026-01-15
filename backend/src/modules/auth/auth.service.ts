@@ -130,10 +130,12 @@ export const requestPasswordReset = async (email: string) => {
   const resetLink = `${process.env.FRONTEND_URL}/auth/reset-password?token=${token}`;
   
   // LOG FOR DEVELOPMENT: Allow testing without valid email setup
-  console.log('================================================');
-  console.log('LINK DE RECUPERACIÓN (Copia y pega en navegador):');
-  console.log(resetLink);
-  console.log('================================================');
+  if (process.env.NODE_ENV === 'development') {
+    console.log('================================================');
+    console.log('LINK DE RECUPERACIÓN (Copia y pega en navegador):');
+    console.log(resetLink);
+    console.log('================================================');
+  }
 
   await sendEmail(
     email,

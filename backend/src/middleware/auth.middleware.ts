@@ -9,13 +9,19 @@ interface JwtPayload {
 }
 
 export const authenticate = (req: Request, res: Response, next: NextFunction) => {
-  const authHeader = req.headers.authorization;
+  let token = req.cookies?.accessToken;
+
+  // Fallback to Header (optional, for backward compatibility or mobile apps)
+  if (!token) {
+    const authHeader = req.headers.authorization;
+    if (authHeader?.startsWith('Bearer ')) {
+      token = authHeader.split(' ')[1];
+    }
+  }
   
-  if (!authHeader?.startsWith('Bearer ')) {
+  if (!token) {
     return res.status(401).json({ message: 'No autorizado' });
   }
-
-  const token = authHeader.split(' ')[1];
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET as string) as JwtPayload;
