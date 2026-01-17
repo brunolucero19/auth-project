@@ -26,12 +26,12 @@ export const registerUser = async (email: string, password: string, name?: strin
 export const loginUser = async (email: string, password: string, userAgent?: string, ipAddress?: string) => {
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user || !user.password) {
-    throw new Error('Credenciales inválidas');
+    throw new Error('Usuario no encontrado');
   }
 
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
-    throw new Error('Credenciales inválidas');
+    throw new Error('Contraseña incorrecta, intente nuevamente');
   }
 
   const { accessToken, refreshToken } = generateTokens(user);
